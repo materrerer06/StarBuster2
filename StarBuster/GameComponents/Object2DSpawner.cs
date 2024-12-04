@@ -13,7 +13,9 @@ namespace StarBuster.GameComponents
         {
             if(aFrameIndex % 50 == 30)
             {
-                GameManager.Instance.AddObject2D(new Enemy(700, 200));
+                GameManager.Instance.AddObject2D(new Enemy(1200, 100));
+                GameManager.Instance.AddObject2D(new Enemy(1200, 300));
+                GameManager.Instance.AddObject2D(new Enemy(1200, 600));
             }
         }
     }

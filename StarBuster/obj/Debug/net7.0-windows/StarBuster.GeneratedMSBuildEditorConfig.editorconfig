@@ -14,4 +14,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = StarBuster
-build_property.ProjectDir = C:\Users\ATI2021.DESKTOP-J6BKKJ1.010\Desktop\ss\StarBuster\
+build_property.ProjectDir = C:\Users\ATI2021\Desktop\aass\StarBuster\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

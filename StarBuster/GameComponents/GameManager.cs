@@ -85,6 +85,13 @@ namespace StarBuster.GameComponents
             SolidBrush titleBrush = new SolidBrush(Color.White);
             g.DrawString(titleText, titleFont, titleBrush, 400, 50);
 
+            string optionsText = "Press O for Options";
+            string aboutText = "Press A for Options";
+
+            Font optionsFont = new Font("Arial", 16);
+            g.DrawString(optionsText, optionsFont, titleBrush, 100, 600);
+            g.DrawString(aboutText, optionsFont, titleBrush, 100, 630);
+
             if (FrameIndex % 50 < 20)
             {
                 string pressKeyText = "Press Space to Start";
@@ -104,10 +111,26 @@ namespace StarBuster.GameComponents
 
         private void RenderAbout(Graphics g)
         {
-            string aboutText = "About StarBuster Game...";
+            string aboutText = "About StarBuster Game: ";
+            string descText = "Game by: Mateusz Cembala \n Version: v.1.01";
             Font aboutFont = new Font("Arial", 16);
             SolidBrush aboutBrush = new SolidBrush(Color.White);
             g.DrawString(aboutText, aboutFont, aboutBrush, 150, 50);
+            g.DrawString(descText, aboutFont, aboutBrush, 150, 100);
+        }
+        //sssssss
+        private void Btn_Click(object sender, MouseEventArgs e, Hero hero)
+        {
+            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50); 
+
+            if (buttonRectangle.Contains(e.Location)) 
+            {
+                // Działanie po kliknięciu, np. zmiana zdrowia
+                hero.Energy = hero.Energy - 20;
+                Console.WriteLine("klik");
+                
+                MessageBox.Show("Health adjustment option clicked!");
+            }
         }
 
         private void RenderOptions(Graphics g)
@@ -116,7 +139,19 @@ namespace StarBuster.GameComponents
             Font optionsFont = new Font("Arial", 16);
             SolidBrush optionsBrush = new SolidBrush(Color.White);
             g.DrawString(optionsText, optionsFont, optionsBrush, 150, 50);
+
+            string option1Text = "Adjust your health";
+            g.DrawString(option1Text, optionsFont, optionsBrush, 150, 100);
+
+            string buttonText = "Click to Adjust Health";
+            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50);  
+            Brush buttonBrush = new SolidBrush(Color.Gray);
+            g.FillRectangle(buttonBrush, buttonRectangle); 
+
+            Brush textBrush = new SolidBrush(Color.White);
+            g.DrawString(buttonText, optionsFont, textBrush, 160, 165); 
         }
+
 
         private void RenderGameOver(Graphics g)
         {
@@ -128,7 +163,7 @@ namespace StarBuster.GameComponents
                 SolidBrush gameOverBrush = new SolidBrush(Color.Red);
                 g.DrawString(gameOverText, gameOverFont, gameOverBrush, 150, 50);
             }
-                string restartText = "Press SPACE to restar the game!";
+                string restartText = "Press SPACE to restart the game!";
                 Font restgameFont = new Font("Arial", 30);
                 SolidBrush restartGameBrush = new SolidBrush(Color.White);
                 g.DrawString(restartText, restgameFont, restartGameBrush, 350, 250);
