@@ -1,5 +1,9 @@
-﻿using StarBuster.Objects2D;
+﻿
+using StarBuster.Objects2D;
 using StarBuster.Types;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace StarBuster.GameComponents
 {
@@ -40,7 +44,7 @@ namespace StarBuster.GameComponents
             FrameIndex = 0;
             State = GameState.TitleScreen;
         }
-        
+
         public void AddObject2D(Object2D obj)
         {
             _toAdd.Add(obj);
@@ -59,35 +63,75 @@ namespace StarBuster.GameComponents
                     RenderTitleScreen(g);
                     break;
                 case GameState.GamePlay:
-                    foreach (Object2D obj in _objects) obj.Render(g);
+                    RenderGamePlay(g);
                     break;
                 case GameState.About:
+                    RenderAbout(g);
                     break;
                 case GameState.Options:
+                    RenderOptions(g);
                     break;
                 case GameState.GameOver:
+                    RenderGameOver(g);
                     break;
             }
         }
-        private void RenderAbout(Graphics g)
-        {
 
-        }
         private void RenderTitleScreen(Graphics g)
         {
             _objects[0].Render(g);
-            String drawString = "StarBuster ~Beta~";
-            Font drawFont = new Font("Arial", 16);
-            SolidBrush drawBrush = new SolidBrush(Color.White);
-            g.DrawString(drawString, drawFont, drawBrush, 150,50);
+            string titleText = "StarBuster ~Beta~";
+            Font titleFont = new Font("Arial", 36);
+            SolidBrush titleBrush = new SolidBrush(Color.White);
+            g.DrawString(titleText, titleFont, titleBrush, 400, 50);
 
-            if(FrameIndex % 50 < 20)
+            if (FrameIndex % 50 < 20)
             {
-            String drawString2 = "Press Key";
-            Font drawFont2 = new Font("Arial", 16);
-            SolidBrush drawBrush2 = new SolidBrush(Color.Red);
-            g.DrawString(drawString2, drawFont2, drawBrush2, 150, 450);
+                string pressKeyText = "Press Space to Start";
+                Font pressKeyFont = new Font("Arial", 16);
+                SolidBrush pressKeyBrush = new SolidBrush(Color.Red);
+                g.DrawString(pressKeyText, pressKeyFont, pressKeyBrush, 500, 450);
             }
+        }
+
+        private void RenderGamePlay(Graphics g)
+        {
+            foreach (Object2D obj in _objects)
+            {
+                obj.Render(g);
+            }
+        }
+
+        private void RenderAbout(Graphics g)
+        {
+            string aboutText = "About StarBuster Game...";
+            Font aboutFont = new Font("Arial", 16);
+            SolidBrush aboutBrush = new SolidBrush(Color.White);
+            g.DrawString(aboutText, aboutFont, aboutBrush, 150, 50);
+        }
+
+        private void RenderOptions(Graphics g)
+        {
+            string optionsText = "Options: Customize your game...";
+            Font optionsFont = new Font("Arial", 16);
+            SolidBrush optionsBrush = new SolidBrush(Color.White);
+            g.DrawString(optionsText, optionsFont, optionsBrush, 150, 50);
+        }
+
+        private void RenderGameOver(Graphics g)
+        {
+            _objects.Clear();
+            if (FrameIndex % 50 < 20)
+            {
+                string gameOverText = "Game Over!";
+                Font gameOverFont = new Font("Arial", 120);
+                SolidBrush gameOverBrush = new SolidBrush(Color.Red);
+                g.DrawString(gameOverText, gameOverFont, gameOverBrush, 150, 50);
+            }
+                string restartText = "Press SPACE to restar the game!";
+                Font restgameFont = new Font("Arial", 30);
+                SolidBrush restartGameBrush = new SolidBrush(Color.White);
+                g.DrawString(restartText, restgameFont, restartGameBrush, 350, 250);
         }
 
         public void Update()
@@ -95,40 +139,54 @@ namespace StarBuster.GameComponents
             switch (State)
             {
                 case GameState.TitleScreen:
-                    _objects[0].Update();
-                    if (KeySet.Contains(Keys.Space))
-                    {
-                        State = GameState.GamePlay;
-                    }
+                    UpdateTitleScreen();
                     break;
                 case GameState.GamePlay:
-                    UpdateGameplay();
+                    UpdateGamePlay();
                     break;
                 case GameState.About:
-
+                    UAbout();
                     break;
                 case GameState.Options:
+                    UOptions();
                     break;
                 case GameState.GameOver:
+                    UGameOver();
                     break;
             }
             FrameIndex++;
         }
-        public void UpdateGameplay()
-        {
-            // Aktualizacja pozycji i stanu każdego obiektu
-            foreach (Object2D obj in _objects) obj.Update();
 
-            // Wykrywanie kolizji i ich obsługa
+        private void UpdateTitleScreen()
+        {
+            _objects[0].Update();
+            if (KeySet.Contains(Keys.Space))
+            {
+                State = GameState.GamePlay;
+            }
+            else if (KeySet.Contains(Keys.A))
+            {
+                State = GameState.About;
+            }
+            else if (KeySet.Contains(Keys.O))
+            {
+                State = GameState.Options;
+            }
+        }
+
+        public void UpdateGamePlay()
+        {
+            foreach (Object2D obj in _objects)
+            {
+                obj.Update();
+            }
+
             var collisions = _detector.DetectCollisions();
             _solver.ResolveCollisions(collisions);
 
-            // Dodanie obiektów z kolejki do listy aktywnych obiektów
             _objects.AddRange(_toAdd);
             _toAdd.Clear();
 
-
-            // Usunięcie obiektów, które opuściły ekran, oprócz Hero
             foreach (var obj in _objects)
             {
                 if (obj.IsOutOfScreen(Width, Height) && obj is not Hero)
@@ -137,17 +195,60 @@ namespace StarBuster.GameComponents
                 }
             }
 
-            // Usunięcie obiektów z listy aktywnych obiektów
             _objects.RemoveAll(obj => _toRemove.Contains(obj));
             _toRemove.Clear();
 
+            var hero = _objects.OfType<Hero>().FirstOrDefault();
+            if (hero != null)
+            {
+
+                if (hero.Energy <= 0) 
+                {
+                    State = GameState.GameOver;
+                }
+            }
+
             Object2DSpawner.Update(FrameIndex++);
+        }
+
+
+        private void UAbout()
+        {
+            if (KeySet.Contains(Keys.Escape))
+            {
+                State = GameState.TitleScreen;
+            }
+        }
+
+        private void UOptions()
+        {
+            if (KeySet.Contains(Keys.Escape))
+            {
+                State = GameState.TitleScreen;
+            }
+        }
+
+        private void UGameOver()
+        {
+            if (KeySet.Contains(Keys.Space))
+            {
+                RestartGame();
+            }
         }
 
         public void SetResolution(int aWidth, int aHeight)
         {
             Width = aWidth;
             Height = aHeight;
+        }
+
+        private void RestartGame()
+        {
+            _objects.Clear();
+            _objects.Add(new StarField(200, 1200, 800));
+            _objects.Add(new Hero(100, 100));
+            State = GameState.GamePlay;
+            FrameIndex = 0;
         }
     }
 }

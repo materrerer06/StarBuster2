@@ -11,13 +11,19 @@ namespace StarBuster.Objects2D
         private int _ileDoStrzalu;
         private int _energy;
 
+        public int Energy
+        {
+            get { return _energy; }
+            set { _energy = Energy; }
+        }
+
         public Hero(int x, int y) : base(x, y)
         {
             _hw = 20;
             _hh = 10;
 
             _energy = 100;
-        _ileDoStrzalu = 0;
+            _ileDoStrzalu = 0;
         }
 
         public override void Render(Graphics g)
@@ -26,7 +32,6 @@ namespace StarBuster.Objects2D
             DrawFireEffect(g);
             DrawEnergy(g);
 
-            // TODO: inne vizualne efekty, np. niewidzialność, tarcza, itp.
         }
 
         private void DrawEnergy(Graphics g)
@@ -42,7 +47,6 @@ namespace StarBuster.Objects2D
             HandleMovement();
             HandleShooting();
             ApplyMovementLimits();
-            // TODO: inne fizyczne efekty, np. przyciąganie przez magnes bossa
         }
 
         public void ChangeEnergy(int aValue)
@@ -53,7 +57,6 @@ namespace StarBuster.Objects2D
         {
             _energy -= aValue;
         }
-        // Rysuje bohatera
         private void DrawHero(Graphics g)
         {
             g.FillEllipse(Brushes.DodgerBlue, new Rectangle(x - 30, y - 7, 60, 14));
@@ -61,7 +64,6 @@ namespace StarBuster.Objects2D
             g.FillEllipse(Brushes.White, new Rectangle(x - 5, y - 4, 10, 8));
         }
 
-        // Rysuje efekt ognia za bohaterem
         private void DrawFireEffect(Graphics g)
         {
             for (int i = 0; i < 10; i++)
@@ -75,7 +77,6 @@ namespace StarBuster.Objects2D
             }
         }
 
-        // Obsługuje ruch bohatera na podstawie klawiszy
         private void HandleMovement()
         {
             var keyboard = GameManager.Instance.KeySet;
@@ -87,7 +88,6 @@ namespace StarBuster.Objects2D
             else if (keyboard.Contains(Keys.Right)) x += 5;
         }
 
-        // Obsługuje strzelanie i czas odnowienia dla bohatera
         private void HandleShooting()
         {
             var gm = GameManager.Instance;
@@ -95,13 +95,12 @@ namespace StarBuster.Objects2D
             if (gm.KeySet.Contains(Keys.Space) && _ileDoStrzalu == 0)
             {
                 gm.AddObject2D(new Bullet(x + 20, y));
-                _ileDoStrzalu = 10; // Czas odnowienia strzału
+                _ileDoStrzalu = 10; 
             }
 
             if (_ileDoStrzalu > 0) _ileDoStrzalu--;
         }
 
-        // Ogranicza ruch bohatera do granic ekranu gry
         private void ApplyMovementLimits()
         {
             var gm = GameManager.Instance;
