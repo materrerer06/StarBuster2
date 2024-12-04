@@ -32,6 +32,7 @@ namespace StarBuster.GameComponents
             {
                 new StarField(200, 1200, 800),
                 new Hero(100, 100),
+                new Boss( 200,200)
             };
 
             _toAdd = new List<Object2D>();
@@ -125,10 +126,8 @@ namespace StarBuster.GameComponents
 
             if (buttonRectangle.Contains(e.Location)) 
             {
-                // Działanie po kliknięciu, np. zmiana zdrowia
                 hero.Energy = hero.Energy - 20;
                 Console.WriteLine("klik");
-                
                 MessageBox.Show("Health adjustment option clicked!");
             }
         }

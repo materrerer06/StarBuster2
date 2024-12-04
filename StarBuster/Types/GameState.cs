@@ -6,6 +6,7 @@
         About,
         Options,
         GamePlay,
-        GameOver
+        GameOver,
+        EndGame
     }
 }
