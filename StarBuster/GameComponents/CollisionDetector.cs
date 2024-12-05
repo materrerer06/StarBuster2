@@ -12,7 +12,6 @@ namespace StarBuster.GameComponents
             _objects = objects;
         }
 
-        // Metoda wykrywająca kolizje i zwracająca listę par kolidujących obiektów
         public List<(Object2D, Object2D)> DetectCollisions()
         {
             var collisions = new List<(Object2D, Object2D)>();

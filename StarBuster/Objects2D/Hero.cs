@@ -95,7 +95,7 @@ namespace StarBuster.Objects2D
             if (gm.KeySet.Contains(Keys.Space) && _ileDoStrzalu == 0)
             {
                 gm.AddObject2D(new Bullet(x + 20, y));
-                _ileDoStrzalu = 10; 
+                _ileDoStrzalu = 2; 
             }
 
             if (_ileDoStrzalu > 0) _ileDoStrzalu--;

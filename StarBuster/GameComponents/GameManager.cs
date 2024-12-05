@@ -31,8 +31,7 @@ namespace StarBuster.GameComponents
             _objects = new List<Object2D>
             {
                 new StarField(200, 1200, 800),
-                new Hero(100, 100),
-                new Boss( 200,200)
+                new Hero(100, 100)
             };
 
             _toAdd = new List<Object2D>();
@@ -75,6 +74,37 @@ namespace StarBuster.GameComponents
                 case GameState.GameOver:
                     RenderGameOver(g);
                     break;
+                case GameState.EndGame:
+                    RenderEndGame(g);
+                    break;
+            }
+        }
+
+        private void RenderEndGame(Graphics g)
+        {
+            _objects[0].Render(g);
+            string endText = "You WON!!!";
+            Font titleFont = new Font("Arial", 36);
+            SolidBrush titleBrush = new SolidBrush(Color.White);
+            g.DrawString(endText, titleFont, titleBrush, 400, 50);
+
+            if (FrameIndex % 50 < 20)
+            {
+                string pressKeyText = "Press Space to Play Again";
+                Font pressKeyFont = new Font("Arial", 16);
+                SolidBrush pressKeyBrush = new SolidBrush(Color.Red);
+                g.DrawString(pressKeyText, pressKeyFont, pressKeyBrush, 500, 450);
+            }
+        }
+        private void UEndGame()
+        { 
+            if (KeySet.Contains(Keys.Space))
+            {
+                RestartGame();
+            }
+            else if(KeySet.Contains(Keys.Left))
+            {
+                State = GameState.TitleScreen;
             }
         }
 
@@ -187,9 +217,13 @@ namespace StarBuster.GameComponents
                 case GameState.GameOver:
                     UGameOver();
                     break;
+                case GameState.EndGame:
+                    UEndGame();
+                    break;
             }
             FrameIndex++;
         }
+
 
         private void UpdateTitleScreen()
         {
@@ -241,8 +275,17 @@ namespace StarBuster.GameComponents
                     State = GameState.GameOver;
                 }
             }
-
+            var obj1 = _objects.OfType<Boss>().FirstOrDefault();
+            if (obj1 != null)
+            {
+                if (obj1.Health <= 0)
+                {
+                    State = GameState.EndGame;
+                    //  _toRemove.Add(obj1);
+                }
+            }
             Object2DSpawner.Update(FrameIndex++);
+
         }
 
 
@@ -281,8 +324,10 @@ namespace StarBuster.GameComponents
             _objects.Clear();
             _objects.Add(new StarField(200, 1200, 800));
             _objects.Add(new Hero(100, 100));
+
             State = GameState.GamePlay;
-            FrameIndex = 0;
         }
+
+
     }
 }

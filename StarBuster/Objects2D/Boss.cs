@@ -1,18 +1,30 @@
 ﻿
 
+using StarBuster.GameComponents;
+
 namespace StarBuster.Objects2D
 {
     public class Boss : Object2D
     {
-        private int _energy;
+        private int _health;
         private int _shootDealy;
         private int _helperDealey;
+        int dir = 12;
+
 
         public Boss(int x, int y) : base(x, y)
         {
-            _energy = 100;
+            _health = 100;
             _shootDealy = 0;
             _helperDealey = 0;
+
+            _hw = 40;
+            _hh = 65;
+        }
+        public int Health
+        {
+            get { return _health; }
+            set { _health = Health; }
         }
 
         public override void Render(Graphics g)
@@ -39,7 +51,7 @@ namespace StarBuster.Objects2D
 
         private void DrawEnergy(Graphics g)
         {
-            int energy_width = _energy * 3;
+            int energy_width = _health * 3;
 
             g.DrawRectangle(Pens.White, 800, 19, 302, 32);
             g.FillRectangle(Brushes.Yellow, 801, 20, energy_width, 30);
@@ -51,7 +63,14 @@ namespace StarBuster.Objects2D
             HandleMovement();
             HandleHelpers();
         }
-
+        public void ChangeEnergy(int aValue)
+        {
+            _health += aValue;
+        }
+        public void Hitted(int aValue)
+        {
+            _health -= aValue;
+        }
         private void HandleHelpers()
         {
 
@@ -59,7 +78,9 @@ namespace StarBuster.Objects2D
 
         private void HandleMovement()
         {
+/*            if (y < 10 || y > GameManager.Instance.Height - 50) dir = -dir;
 
+            y += dir;*/
         }
 
         private void HandleShooting()

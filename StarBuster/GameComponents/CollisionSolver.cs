@@ -40,6 +40,39 @@ public class CollisionSolver
                     GameManager.Instance.Remove(bullet3);  
                 }
             }
+            else if ((obj1 is Hero && obj2 is Boss ) || (obj1 is Boss && obj2 is Hero))
+            {
+                if (obj1 is Hero hero1 && obj2 is Boss boss1)
+                {
+                    hero1.Hitted(20);
+                    boss1.Hitted(10);
+                }
+                else if (obj1 is Boss boss2 && obj2 is Hero hero2)
+                {
+                    hero2.Hitted(20);
+                    boss2.Hitted(10);
+                }
+
+                TriggerExplosion(obj2);
+                //hp -10
+            }
+            else if ((obj1 is Bullet && obj2 is Boss) || (obj1 is Boss && obj2 is Bullet))
+            {
+                if (obj1 is Bullet bullet2 && obj2 is Boss boss3)
+                {
+                    TriggerExplosion(obj2);
+                    //hp-5
+                    boss3.Hitted(5);
+                    GameManager.Instance.Remove(bullet2);
+                }
+                else if (obj1 is Boss boss4 && obj2 is Bullet bullet4)
+                {
+                    TriggerExplosion(obj1);
+                    //hp-5
+                    boss4.Hitted(5);
+                    GameManager.Instance.Remove(bullet4);
+                }
+            }
         }
     }
 
@@ -58,6 +91,12 @@ public class CollisionSolver
             // Stworzenie eksplozji w miejscu pocisku
             Explosion explosion = new Explosion(bullet.x, bullet.y);  // Przekazujemy pozycję pocisku
             GameManager.Instance.AddObject2D(explosion);  // Dodajemy eksplozję do gry
+        }
+        else if (obj is Boss boss5)
+        {
+            // Stworzenie eksplozji w miejscu wroga
+            Explosion explosion = new Explosion(boss5.x, boss5.y);  // Przekazujemy pozycję wroga
+            GameManager.Instance.AddObject2D(explosion);  // Dodajemy eksplozję do gry, aby była renderowana
         }
     }
 }
