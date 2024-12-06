@@ -73,6 +73,23 @@ public class CollisionSolver
                     GameManager.Instance.Remove(bullet4);
                 }
             }
+            else if ((obj1 is BossBullet && obj2 is Hero) || (obj1 is Hero && obj2 is BossBullet))
+            {
+                if (obj1 is BossBullet bullet2 && obj2 is Hero hero1)
+                {
+                    TriggerExplosion(obj2);
+                    //hp-5
+                    hero1.Hitted(5);
+                    GameManager.Instance.Remove(bullet2);
+                }
+                else if (obj1 is Hero hero2 && obj2 is BossBullet bullet4)
+                {
+                    TriggerExplosion(obj1);
+                    //hp-5
+                    hero2.Hitted(5);
+                    GameManager.Instance.Remove(bullet4);
+                }
+            }
         }
     }
 
@@ -97,6 +114,12 @@ public class CollisionSolver
             // Stworzenie eksplozji w miejscu wroga
             Explosion explosion = new Explosion(boss5.x, boss5.y);  // Przekazujemy pozycję wroga
             GameManager.Instance.AddObject2D(explosion);  // Dodajemy eksplozję do gry, aby była renderowana
+        }
+        else if (obj is Hero hero1)
+        {
+            // Stworzenie eksplozji w miejscu wroga
+            HeroExplosion heroexplosion = new HeroExplosion(hero1.x, hero1.y);
+            GameManager.Instance.AddObject2D(heroexplosion);  // Dodajemy eksplozję do gry, aby była renderowana
         }
     }
 }

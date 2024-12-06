@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\StarBuster.csproj": {}
+    "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\StarBuster.csproj": {}
   },
   "projects": {
-    "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\StarBuster.csproj": {
+    "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\StarBuster.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
+        "projectUniqueName": "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
         "projectName": "StarBuster",
-        "projectPath": "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
+        "projectPath": "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
         "packagesPath": "C:\\Users\\matic\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\obj\\",
+        "outputPath": "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\matic\\AppData\\Roaming\\NuGet\\NuGet.Config",

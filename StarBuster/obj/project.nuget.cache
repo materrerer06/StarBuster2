@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tGZ26gGaMaa0JaNbpicBaAqnDizgdECx4gWV8RaC1Zb+9FQET5NKRVdbpHNTihq/594KiFMyl9MgKFAkrnkGVg==",
+  "dgSpecHash": "qdPnLgdGgRmxdnUpxkKK0BDRpSMG3snBBiCqDCcycTCbCZi8OvM2b0Fea3cKih/9oWTTO+FRbrbBPs8wg4mwlQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\matic\\Source\\Repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
+  "projectFilePath": "C:\\Users\\matic\\source\\repos\\StarBuster2\\StarBuster\\StarBuster.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\matic\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\7.0.16\\microsoft.windowsdesktop.app.ref.7.0.16.nupkg.sha512",
     "C:\\Users\\matic\\.nuget\\packages\\microsoft.netcore.app.ref\\7.0.16\\microsoft.netcore.app.ref.7.0.16.nupkg.sha512",

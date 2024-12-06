@@ -1,8 +1,8 @@
-﻿
-using StarBuster.Objects2D;
+﻿using StarBuster.Objects2D;
 using StarBuster.Types;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace StarBuster.GameComponents
@@ -96,13 +96,14 @@ namespace StarBuster.GameComponents
                 g.DrawString(pressKeyText, pressKeyFont, pressKeyBrush, 500, 450);
             }
         }
+
         private void UEndGame()
-        { 
+        {
             if (KeySet.Contains(Keys.Space))
             {
                 RestartGame();
             }
-            else if(KeySet.Contains(Keys.Left))
+            else if (KeySet.Contains(Keys.Left))
             {
                 State = GameState.TitleScreen;
             }
@@ -149,15 +150,14 @@ namespace StarBuster.GameComponents
             g.DrawString(aboutText, aboutFont, aboutBrush, 150, 50);
             g.DrawString(descText, aboutFont, aboutBrush, 150, 100);
         }
-        //sssssss
+
         private void Btn_Click(object sender, MouseEventArgs e, Hero hero)
         {
-            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50); 
+            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50);
 
-            if (buttonRectangle.Contains(e.Location)) 
+            if (buttonRectangle.Contains(e.Location))
             {
                 hero.Energy = hero.Energy - 20;
-                Console.WriteLine("klik");
                 MessageBox.Show("Health adjustment option clicked!");
             }
         }
@@ -173,12 +173,12 @@ namespace StarBuster.GameComponents
             g.DrawString(option1Text, optionsFont, optionsBrush, 150, 100);
 
             string buttonText = "Click to Adjust Health";
-            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50);  
+            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50);
             Brush buttonBrush = new SolidBrush(Color.Gray);
-            g.FillRectangle(buttonBrush, buttonRectangle); 
+            g.FillRectangle(buttonBrush, buttonRectangle);
 
             Brush textBrush = new SolidBrush(Color.White);
-            g.DrawString(buttonText, optionsFont, textBrush, 160, 165); 
+            g.DrawString(buttonText, optionsFont, textBrush, 160, 165);
         }
 
 
@@ -192,10 +192,10 @@ namespace StarBuster.GameComponents
                 SolidBrush gameOverBrush = new SolidBrush(Color.Red);
                 g.DrawString(gameOverText, gameOverFont, gameOverBrush, 150, 50);
             }
-                string restartText = "Press SPACE to restart the game!";
-                Font restgameFont = new Font("Arial", 30);
-                SolidBrush restartGameBrush = new SolidBrush(Color.White);
-                g.DrawString(restartText, restgameFont, restartGameBrush, 350, 250);
+            string restartText = "Press SPACE to restart the game!";
+            Font restgameFont = new Font("Arial", 30);
+            SolidBrush restartGameBrush = new SolidBrush(Color.White);
+            g.DrawString(restartText, restgameFont, restartGameBrush, 350, 250);
         }
 
         public void Update()
@@ -224,7 +224,6 @@ namespace StarBuster.GameComponents
             FrameIndex++;
         }
 
-
         private void UpdateTitleScreen()
         {
             _objects[0].Update();
@@ -244,17 +243,21 @@ namespace StarBuster.GameComponents
 
         public void UpdateGamePlay()
         {
+            // Aktualizacja obiektów
             foreach (Object2D obj in _objects)
             {
                 obj.Update();
             }
 
+            // Sprawdzenie wykrytych kolizji
             var collisions = _detector.DetectCollisions();
             _solver.ResolveCollisions(collisions);
 
+            // Dodanie nowych obiektów
             _objects.AddRange(_toAdd);
             _toAdd.Clear();
 
+            // Sprawdzanie, które obiekty wychodzą poza ekran
             foreach (var obj in _objects)
             {
                 if (obj.IsOutOfScreen(Width, Height) && obj is not Hero)
@@ -262,32 +265,27 @@ namespace StarBuster.GameComponents
                     _toRemove.Add(obj);
                 }
             }
-
+            // Usuwanie obiektów
             _objects.RemoveAll(obj => _toRemove.Contains(obj));
             _toRemove.Clear();
 
+            // Sprawdzanie stanu bohatera
             var hero = _objects.OfType<Hero>().FirstOrDefault();
-            if (hero != null)
+            if (hero != null && hero.Energy <= 0)
             {
+                State = GameState.GameOver;
+            }
 
-                if (hero.Energy <= 0) 
-                {
-                    State = GameState.GameOver;
-                }
-            }
-            var obj1 = _objects.OfType<Boss>().FirstOrDefault();
-            if (obj1 != null)
+            // Sprawdzanie stanu bossa
+            var boss = _objects.OfType<Boss>().FirstOrDefault();
+            if (boss != null && boss.Health <= 0)
             {
-                if (obj1.Health <= 0)
-                {
-                    State = GameState.EndGame;
-                    //  _toRemove.Add(obj1);
-                }
+                State = GameState.EndGame;
             }
+
+            // Spawnowanie obiektów
             Object2DSpawner.Update(FrameIndex++);
-
         }
-
 
         private void UAbout()
         {
@@ -327,7 +325,5 @@ namespace StarBuster.GameComponents
 
             State = GameState.GamePlay;
         }
-
-
     }
 }

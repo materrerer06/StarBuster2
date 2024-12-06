@@ -1,22 +1,30 @@
 ﻿
 
 using StarBuster.GameComponents;
+using System.Diagnostics;
 
 namespace StarBuster.Objects2D
 {
     public class Boss : Object2D
     {
         private int _health;
-        private int _shootDealy;
+        private int _shootDelay;
+        private float _timeSinceLastShoot;
+        int FrameIndex;
         private int _helperDealey;
-        int dir = 12;
+        private float _timeSinceLastSpawn;
+        int dir = 5;
 
 
         public Boss(int x, int y) : base(x, y)
         {
             _health = 100;
-            _shootDealy = 0;
-            _helperDealey = 0;
+
+            _helperDealey = 300;
+            _timeSinceLastSpawn = 0f;
+
+            _shootDelay = 60;
+            _timeSinceLastShoot = 0f;
 
             _hw = 40;
             _hh = 65;
@@ -60,7 +68,7 @@ namespace StarBuster.Objects2D
         public override void Update()
         {
             HandleShooting();
-            HandleMovement();
+            HandleMovement(FrameIndex++);
             HandleHelpers();
         }
         public void ChangeEnergy(int aValue)
@@ -73,19 +81,48 @@ namespace StarBuster.Objects2D
         }
         private void HandleHelpers()
         {
+            _timeSinceLastSpawn += GameManager.Instance.FrameIndex / 60f;
 
+            if (_timeSinceLastSpawn >= _helperDealey)
+            {
+                GameManager.Instance.AddObject2D(new Enemy(x, y-10));
+                _timeSinceLastSpawn = 0f;
+            }
         }
 
-        private void HandleMovement()
+        private void HandleMovement(int bFrameIndex)
         {
-/*            if (y < 10 || y > GameManager.Instance.Height - 50) dir = -dir;
-
-            y += dir;*/
+            if (bFrameIndex >= 0 && bFrameIndex < 50)
+            {
+                x -= 8;
+            }
+            if (bFrameIndex >= 50 && bFrameIndex <90)
+            {
+                x -= 0;
+            }
+            if (bFrameIndex >= 90)
+            {
+                x -= 0;
+                if (y < 10 || y > GameManager.Instance.Height - 10) dir = -dir;
+                y += dir;
+            }
+            Debug.WriteLine(bFrameIndex);
         }
 
         private void HandleShooting()
         {
+            // Zwiększamy czas od ostatniego strzału
+            _timeSinceLastShoot += GameManager.Instance.FrameIndex / 60f;  // Czas w sekundach
 
+            // Sprawdzamy, czy minął czas, by boss mógł oddać kolejny strzał
+            if (_timeSinceLastShoot >= _shootDelay)
+            {
+                // Tworzymy pocisk z pozycji Bossa
+                var bossbullet = new BossBullet(x, y);  // Zmieniamy na odpowiednią klasę Bullet
+                GameManager.Instance.AddObject2D(bossbullet);  // Dodajemy pocisk do gry
+
+                _timeSinceLastShoot = 0f;  // Resetujemy licznik czasu od ostatniego strzału
+            }
         }
     }
 }
