@@ -20,7 +20,7 @@ namespace StarBuster.GameComponents
         private List<Object2D> _toRemove;   // lista obiektów do usunięcia w następnej klatce
         private CollisionDetector _detector; // obiekt do wykrywania kolizji
         private CollisionSolver _solver;     // obiekt do rozwiązywania kolizji
-
+        private int _explosionTimer = 0;
         private static readonly GameManager _instance = new GameManager();
         public static GameManager Instance => _instance;
 
@@ -90,7 +90,7 @@ namespace StarBuster.GameComponents
 
             if (FrameIndex % 50 < 20)
             {
-                string pressKeyText = "Press Space to Play Again";
+                string pressKeyText = "Press R to Play Again";
                 Font pressKeyFont = new Font("Arial", 16);
                 SolidBrush pressKeyBrush = new SolidBrush(Color.Red);
                 g.DrawString(pressKeyText, pressKeyFont, pressKeyBrush, 500, 450);
@@ -99,7 +99,7 @@ namespace StarBuster.GameComponents
 
         private void UEndGame()
         {
-            if (KeySet.Contains(Keys.Space))
+            if (KeySet.Contains(Keys.R))
             {
                 RestartGame();
             }
@@ -227,7 +227,7 @@ namespace StarBuster.GameComponents
         private void UpdateTitleScreen()
         {
             _objects[0].Update();
-            if (KeySet.Contains(Keys.Space))
+            if (KeySet.Contains(Keys.R))
             {
                 State = GameState.GamePlay;
             }
@@ -280,7 +280,26 @@ namespace StarBuster.GameComponents
             var boss = _objects.OfType<Boss>().FirstOrDefault();
             if (boss != null && boss.Health <= 0)
             {
-                State = GameState.EndGame;
+                // Jeżeli eksplozja jeszcze nie została zainicjowana
+                if (_explosionTimer == 0)
+                {
+                    // Dodanie eksplozji bossa
+                    var explosion = new BossExplosion(boss.x, boss.y, radius: 50, duration: 300);
+                    _toAdd.Add(explosion);
+                }
+                boss.Movement = false;
+                boss.Shoot = 524353450;
+
+                _explosionTimer++;
+
+                if (_explosionTimer >= 100)
+                {
+                    State = GameState.EndGame;
+                }
+            }
+            else
+            {
+                _explosionTimer = 0;
             }
 
             // Spawnowanie obiektów
@@ -305,7 +324,7 @@ namespace StarBuster.GameComponents
 
         private void UGameOver()
         {
-            if (KeySet.Contains(Keys.Space))
+            if (KeySet.Contains(Keys.R))
             {
                 RestartGame();
             }
