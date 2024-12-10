@@ -16,6 +16,11 @@ namespace StarBuster.Objects2D
             get { return _energy; }
             set { _energy = Energy; }
         }
+        public int ShootDelay
+        {
+            get { return _ileDoStrzalu; }
+            set { _ileDoStrzalu = value; }
+        }
 
         public Hero(int x, int y) : base(x, y)
         {
@@ -23,7 +28,7 @@ namespace StarBuster.Objects2D
             _hh = 10;
 
             _energy = 100;
-            _ileDoStrzalu = 0;
+            _ileDoStrzalu = 10;
         }
 
         public override void Render(Graphics g)
@@ -95,7 +100,6 @@ namespace StarBuster.Objects2D
             if (gm.KeySet.Contains(Keys.Space) && _ileDoStrzalu == 0)
             {
                 gm.AddObject2D(new Bullet(x + 20, y));
-                _ileDoStrzalu = 2; 
             }
 
             if (_ileDoStrzalu > 0) _ileDoStrzalu--;

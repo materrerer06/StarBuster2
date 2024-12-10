@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("StarBuster")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c8e4e8f81f3425a043bb18dd777ff129ca7573b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c7d6899d51d967bbcc3d3760ff7edff68efe089")]
 [assembly: System.Reflection.AssemblyProductAttribute("StarBuster")]
 [assembly: System.Reflection.AssemblyTitleAttribute("StarBuster")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

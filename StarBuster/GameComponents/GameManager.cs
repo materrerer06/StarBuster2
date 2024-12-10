@@ -1,6 +1,7 @@
 ﻿using StarBuster.Objects2D;
 using StarBuster.Types;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -79,7 +80,6 @@ namespace StarBuster.GameComponents
                     break;
             }
         }
-
         private void RenderEndGame(Graphics g)
         {
             _objects[0].Render(g);
@@ -90,7 +90,7 @@ namespace StarBuster.GameComponents
 
             if (FrameIndex % 50 < 20)
             {
-                string pressKeyText = "Press R to Play Again";
+                string pressKeyText = "Press Space to Play Again";
                 Font pressKeyFont = new Font("Arial", 16);
                 SolidBrush pressKeyBrush = new SolidBrush(Color.Red);
                 g.DrawString(pressKeyText, pressKeyFont, pressKeyBrush, 500, 450);
@@ -99,7 +99,7 @@ namespace StarBuster.GameComponents
 
         private void UEndGame()
         {
-            if (KeySet.Contains(Keys.R))
+            if (KeySet.Contains(Keys.Space))
             {
                 RestartGame();
             }
@@ -119,10 +119,12 @@ namespace StarBuster.GameComponents
 
             string optionsText = "Press O for Options";
             string aboutText = "Press A for Options";
+            string ExitText = "Press Q for Quit";
 
             Font optionsFont = new Font("Arial", 16);
             g.DrawString(optionsText, optionsFont, titleBrush, 100, 600);
             g.DrawString(aboutText, optionsFont, titleBrush, 100, 630);
+            g.DrawString(ExitText, optionsFont, titleBrush, 100, 660);
 
             if (FrameIndex % 50 < 20)
             {
@@ -164,21 +166,33 @@ namespace StarBuster.GameComponents
 
         private void RenderOptions(Graphics g)
         {
+            var hero = _objects.OfType<Hero>().FirstOrDefault();
             string optionsText = "Options: Customize your game...";
             Font optionsFont = new Font("Arial", 16);
             SolidBrush optionsBrush = new SolidBrush(Color.White);
             g.DrawString(optionsText, optionsFont, optionsBrush, 150, 50);
 
-            string option1Text = "Adjust your health";
-            g.DrawString(option1Text, optionsFont, optionsBrush, 150, 100);
 
-            string buttonText = "Click to Adjust Health";
-            Rectangle buttonRectangle = new Rectangle(150, 150, 200, 50);
-            Brush buttonBrush = new SolidBrush(Color.Gray);
-            g.FillRectangle(buttonBrush, buttonRectangle);
+            int currentSpawnTime = Object2DSpawner.SpawnTime;
+            int spawninterval = currentSpawnTime / 60;
+            int health = hero.Energy;
+            int shootdelay = hero.ShootDelay;
+            //lewo prawo
+            string spawn = "Kliknij LEFT lub RIGHT, aby zmienic spawn interval";
+            g.DrawString(spawn, optionsFont, optionsBrush, 150, 500);
+            string SpawnSeconds = "Spawn interval: "+currentSpawnTime.ToString();
+            g.DrawString(SpawnSeconds, optionsFont, optionsBrush, 150, 520);
+            //pg up lub pg down
+            string HP = "Kliknij PG UP lub PG DOWN, aby zmienic zycie hero";
+            g.DrawString(HP, optionsFont, optionsBrush, 150, 570);
+            string HeroHP = "Zycie hero: "+health.ToString();
+            g.DrawString(HeroHP, optionsFont, optionsBrush, 150, 590);
+            //w i s
+            string Shoot = "kliknij W lub S, aby zmienic predkosc strzalu hero";
+            g.DrawString(Shoot, optionsFont, optionsBrush, 150, 640);
+            string ShootDelay = "Prekosc Strzalu: " + shootdelay.ToString();
+            g.DrawString(ShootDelay, optionsFont, optionsBrush, 150, 660);
 
-            Brush textBrush = new SolidBrush(Color.White);
-            g.DrawString(buttonText, optionsFont, textBrush, 160, 165);
         }
 
 
@@ -227,7 +241,7 @@ namespace StarBuster.GameComponents
         private void UpdateTitleScreen()
         {
             _objects[0].Update();
-            if (KeySet.Contains(Keys.R))
+            if (KeySet.Contains(Keys.Space))
             {
                 State = GameState.GamePlay;
             }
@@ -239,11 +253,21 @@ namespace StarBuster.GameComponents
             {
                 State = GameState.Options;
             }
+            if (KeySet.Contains(Keys.Q))
+            {
+                Application.Exit();
+            }
         }
 
         public void UpdateGamePlay()
         {
-            // Aktualizacja obiektów
+            if (KeySet.Contains(Keys.Escape))
+            {
+                _objects.RemoveAll(obj => _toRemove.Contains(obj));
+
+                State = GameState.TitleScreen;
+            }
+                // Aktualizacja obiektów
             foreach (Object2D obj in _objects)
             {
                 obj.Update();
@@ -268,7 +292,6 @@ namespace StarBuster.GameComponents
             // Usuwanie obiektów
             _objects.RemoveAll(obj => _toRemove.Contains(obj));
             _toRemove.Clear();
-
             // Sprawdzanie stanu bohatera
             var hero = _objects.OfType<Hero>().FirstOrDefault();
             if (hero != null && hero.Energy <= 0)
@@ -303,7 +326,8 @@ namespace StarBuster.GameComponents
             }
 
             // Spawnowanie obiektów
-            Object2DSpawner.Update(FrameIndex++);
+            Object2DSpawner.Update(FrameIndex);
+            Debug.WriteLine(FrameIndex);
         }
 
         private void UAbout()
@@ -316,15 +340,53 @@ namespace StarBuster.GameComponents
 
         private void UOptions()
         {
+            var enemy = _objects.OfType<Enemy>().FirstOrDefault();
+            var hero = _objects.OfType<Hero>().FirstOrDefault();
             if (KeySet.Contains(Keys.Escape))
             {
                 State = GameState.TitleScreen;
             }
+            if(Object2DSpawner.SpawnTime < 200 && Object2DSpawner.SpawnTime > 20)
+            {
+            if(KeySet.Contains(Keys.Right))
+            {
+                    Object2DSpawner.SpawnTime += 10;
+            }
+            if (KeySet.Contains(Keys.Left))
+            {
+                    Object2DSpawner.SpawnTime -= 10;
+            }
+            }
+            if(hero.Energy >= 0 ||  hero.Energy <= 450) { 
+            if (KeySet.Contains(Keys.PageUp))
+            {
+                hero.ChangeEnergy(10);
+            }
+            if (KeySet.Contains(Keys.PageDown))
+            {
+                hero.ChangeEnergy(-10);
+            }
+            }
+            if(hero.ShootDelay >= 1 && hero.ShootDelay <= 20)
+            {
+
+                if (KeySet.Contains(Keys.W))
+                {
+                    hero.ShootDelay += 1;
+                }
+                if (KeySet.Contains(Keys.S))
+                {
+                    hero.ShootDelay -= 1;
+                }
+            }
+            //hp-10 lub + 10
+            //enemy spawn delay
+            //shoot delay
         }
 
         private void UGameOver()
         {
-            if (KeySet.Contains(Keys.R))
+            if (KeySet.Contains(Keys.Space))
             {
                 RestartGame();
             }
